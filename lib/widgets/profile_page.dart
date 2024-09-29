@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:text_to_image/utils/image_path.dart';
+import 'package:NFT/utils/image_path.dart';
 
 class profilePage extends StatefulWidget {
   const profilePage({Key? key}) : super(key: key);

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:text_to_image/screens/nft_secure/successfull_secure.dart';
-import 'package:text_to_image/styles/login_box.dart';
+import 'package:NFT/screens/nft_secure/successfull_secure.dart';
+import 'package:NFT/styles/login_box.dart';
 
 class secureNft extends StatefulWidget {
   const secureNft({Key? key}) : super(key: key);

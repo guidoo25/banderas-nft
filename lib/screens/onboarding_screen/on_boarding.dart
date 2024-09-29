@@ -2,8 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
-import 'package:text_to_image/screens/auth/login_page.dart';
-import 'package:text_to_image/styles/onboard_image.dart';
+import 'package:NFT/screens/auth/login_page.dart';
+import 'package:NFT/styles/onboard_image.dart';
 
 class OnBoardingScreen extends StatefulWidget {
   const OnBoardingScreen({Key? key}) : super(key: key);

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:text_to_image/screens/auth/verificaiton_page.dart';
-import 'package:text_to_image/styles/login_box.dart';
+import 'package:NFT/screens/auth/verificaiton_page.dart';
+import 'package:NFT/styles/login_box.dart';
 
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({Key? key}) : super(key: key);

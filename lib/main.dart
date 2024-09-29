@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:text_to_image/screens/onboarding_screen/on_boarding.dart';
-import 'package:text_to_image/styles/colors.dart';
-import 'package:text_to_image/views/home/home.dart';
+import 'package:NFT/configs/config.dart';
+import 'package:NFT/screens/onboarding_screen/on_boarding.dart';
+import 'package:NFT/styles/colors.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-void main() {
+void main() async {
+  await Enviroments().initEnviroments();
   runApp(const ProviderScope(child: MyApp()));
 }
 

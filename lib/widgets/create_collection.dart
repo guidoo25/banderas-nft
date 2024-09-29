@@ -1,7 +1,7 @@
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:text_to_image/utils/image_path.dart';
+import 'package:NFT/utils/image_path.dart';
 
 class createCollection extends StatefulWidget {
   const createCollection({Key? key}) : super(key: key);

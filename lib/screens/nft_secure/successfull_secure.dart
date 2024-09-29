@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:text_to_image/screens/home/home_page.dart';
-import 'package:text_to_image/utils/image_path.dart';
+import 'package:NFT/screens/home/home_page.dart';
+import 'package:NFT/utils/image_path.dart';
 
 class successfullSecure extends StatefulWidget {
   const successfullSecure({Key? key}) : super(key: key);

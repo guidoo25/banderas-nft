@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:text_to_image/styles/login_box.dart';
-import 'package:text_to_image/utils/image_path.dart';
+import 'package:NFT/styles/login_box.dart';
+import 'package:NFT/utils/image_path.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({Key? key}) : super(key: key);

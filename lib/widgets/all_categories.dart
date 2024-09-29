@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:text_to_image/utils/image_path.dart';
+import 'package:NFT/utils/image_path.dart';
 
 class AllCategories extends StatefulWidget {
   const AllCategories({Key? key}) : super(key: key);

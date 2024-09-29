@@ -1,4 +1,4 @@
-name: text_to_image
+name: NFT
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -45,6 +45,7 @@ dependencies:
   dotted_border: ^2.1.0
   intl: ^0.17.0
   web3dart: ^2.3.1
+  flutter_dotenv: ^5.0.3
 
 
 
@@ -69,6 +70,7 @@ flutter:
     - assets/
     - assets/images/
     - assets/images/fullApps/nft/
+    - .env
 
 
   # The following line ensures that the Material Icons font is

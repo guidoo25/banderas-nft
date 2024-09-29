@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:text_to_image/screens/auth/forget_password.dart';
+import 'package:NFT/screens/auth/forget_password.dart';
 
-import 'package:text_to_image/screens/auth/sign_up.dart';
-import 'package:text_to_image/screens/nft_secure/secure_nft.dart';
-import 'package:text_to_image/screens/nft_secure/successfull_secure.dart';
-import 'package:text_to_image/styles/login_box.dart';
-import 'package:text_to_image/utils/image_path.dart';
+import 'package:NFT/screens/auth/sign_up.dart';
+import 'package:NFT/screens/nft_secure/secure_nft.dart';
+import 'package:NFT/screens/nft_secure/successfull_secure.dart';
+import 'package:NFT/styles/login_box.dart';
+import 'package:NFT/utils/image_path.dart';
 
 class loginPage extends StatefulWidget {
   const loginPage({Key? key}) : super(key: key);

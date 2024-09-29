@@ -2,7 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:text_to_image/views/home/home_provider.dart';
+import 'package:NFT/views/home/home_provider.dart';
 
 class HomePageCrud extends ConsumerWidget {
   HomePageCrud({super.key});

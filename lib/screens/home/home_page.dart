@@ -1,15 +1,16 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:text_to_image/utils/image_path.dart';
-import 'package:text_to_image/views/home/home.dart';
-import 'package:text_to_image/widgets/all_categories.dart';
-import 'package:text_to_image/widgets/create_collection.dart';
-import 'package:text_to_image/widgets/fillter_result.dart';
-import 'package:text_to_image/widgets/profile_page.dart';
-import 'package:text_to_image/widgets/setting_page.dart';
-import 'package:text_to_image/widgets/top_seller.dart';
-import 'package:text_to_image/widgets/top_seller_details.dart';
+import 'package:NFT/screens/nft_gestion/create.dart';
+import 'package:NFT/utils/image_path.dart';
+import 'package:NFT/views/home/home.dart';
+import 'package:NFT/widgets/all_categories.dart';
+import 'package:NFT/widgets/create_collection.dart';
+import 'package:NFT/widgets/fillter_result.dart';
+import 'package:NFT/widgets/profile_page.dart';
+import 'package:NFT/widgets/setting_page.dart';
+import 'package:NFT/widgets/top_seller.dart';
+import 'package:NFT/widgets/top_seller_details.dart';
 
 class homePage extends StatefulWidget {
   const homePage({Key? key}) : super(key: key);
@@ -369,7 +370,7 @@ class _homePageState extends State<homePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => HomePageCrud()));
+                                builder: (context) => NftScreen()));
                       },
                       child: Text(
                         "Ver todas",
