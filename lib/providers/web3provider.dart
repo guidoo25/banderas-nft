@@ -11,9 +11,10 @@ final nftContractProvider = Provider<NFTContract>((ref) {
 });
 
 class NFTContract {
-  final String rpcUrl = Enviroments.rpcUrl; // URL de Ganache
-  final String privateKey = Enviroments.secret_key;
-  final String contractAddress = Enviroments.direccion_contrato;
+  final String rpcUrl = "http://127.0.0.1:7545"; // URL de Ganache
+  final String privateKey =
+      "0x59198b50442777d339f375b43d1e79a783c7def6744f0f13855cbfa184c824c5";
+  final String contractAddress = "0xfBE348e2F00E565bB3E34F421a70e33cAaD6871F";
   late Web3Client _web3client;
   late DeployedContract _contract;
   late Credentials _credentials;
@@ -29,11 +30,11 @@ class NFTContract {
   Future<void> _initializeContract() async {
     // Cargar el ABI desde assets
     String abiString = await rootBundle.loadString("assets/MyNFT.json");
-    var abiJson = jsonDecode(abiString);
-    String abiCode = abiJson["abi"]; // Carga directamente la ABI desde el JSON
+    final abiJson = jsonDecode(abiString);
+    final abi =
+        jsonEncode(abiJson["abi"]); // Carga directamente la ABI desde el JSON
 
-    _contract = DeployedContract(
-        ContractAbi.fromJson(jsonEncode(abiCode), "MyNFT"),
+    _contract = DeployedContract(ContractAbi.fromJson(abi, "SimpleNftLowerGas"),
         _contractEthereumAddress);
   }
 

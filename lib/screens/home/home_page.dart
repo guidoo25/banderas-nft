@@ -1,15 +1,15 @@
 import 'dart:async';
+import 'package:NFT/screens/nft_gestion/create_nft.dart';
+import 'package:NFT/screens/nft_gestion/tabs/index.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:NFT/screens/nft_gestion/create.dart';
 import 'package:NFT/utils/image_path.dart';
-import 'package:NFT/views/home/home.dart';
 import 'package:NFT/widgets/all_categories.dart';
 import 'package:NFT/widgets/create_collection.dart';
 import 'package:NFT/widgets/fillter_result.dart';
 import 'package:NFT/widgets/profile_page.dart';
 import 'package:NFT/widgets/setting_page.dart';
-import 'package:NFT/widgets/top_seller.dart';
+
 import 'package:NFT/widgets/top_seller_details.dart';
 
 class homePage extends StatefulWidget {
@@ -370,7 +370,7 @@ class _homePageState extends State<homePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => NftScreen()));
+                                builder: (context) => tabs_nft()));
                       },
                       child: Text(
                         "Ver todas",
