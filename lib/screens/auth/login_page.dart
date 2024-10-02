@@ -1,22 +1,23 @@
-import 'package:flutter/material.dart';
-import 'package:NFT/screens/auth/forget_password.dart';
-
-import 'package:NFT/screens/auth/sign_up.dart';
-import 'package:NFT/screens/nft_secure/secure_nft.dart';
-import 'package:NFT/screens/nft_secure/successfull_secure.dart';
-import 'package:NFT/styles/login_box.dart';
+import 'package:NFT/providers/metamask.dart';
 import 'package:NFT/utils/image_path.dart';
+import 'package:flutter/material.dart';
+import 'package:NFT/screens/auth/sign_up.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class loginPage extends StatefulWidget {
-  const loginPage({Key? key}) : super(key: key);
+class LoginPage extends ConsumerStatefulWidget {
+  const LoginPage({Key? key}) : super(key: key);
 
   @override
-  State<loginPage> createState() => _loginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _loginPageState extends State<loginPage> {
+class _LoginPageState extends ConsumerState<LoginPage> {
   @override
   Widget build(BuildContext context) {
+    // Observar el estado de MetaMask
+    final metamaskState = ref.watch(metaMaskProvider);
+    final metamaskNotifier = ref.read(metaMaskProvider.notifier);
+
     return Scaffold(
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -27,43 +28,31 @@ class _loginPageState extends State<loginPage> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SignUp(),
-                          ));
-                    },
-                    child: Container(
-                      margin: EdgeInsets.only(right: 20),
-                      padding: EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Theme.of(context)
-                            .colorScheme
-                            .primary
-                            .withOpacity(0.3),
-                      ),
-                      child: Text(
-                        "Sign up",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.primary),
-                      ),
+                  Padding(
+                    padding: EdgeInsets.only(
+                        left: 20,
+                        top: MediaQuery.of(context).size.height * 0.05),
+                    child: Image.asset(
+                      NftConstant.getImagePath("logonft.png"),
+                      width: 100,
+                      height: 100,
+                      fit: BoxFit.cover,
                     ),
-                  )
+                  ),
+                  Spacer(),
                 ],
               ),
               Padding(
                 padding: EdgeInsets.only(
                     left: 20, top: MediaQuery.of(context).size.height * 0.05),
                 child: Text(
-                  "Log in!",
+                  "Inicio de sesión!",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 26,
+                    fontSize: 28,
+                    color: Colors.black87,
                   ),
                 ),
               ),
@@ -71,66 +60,98 @@ class _loginPageState extends State<loginPage> {
                 padding: EdgeInsets.only(
                     left: 20, top: MediaQuery.of(context).size.height * 0.01),
                 child: Text(
-                  "Bienvenido identificate para continuar",
+                  "Bienvenido, identifícate con tu wallet para continuar.",
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 18,
+                    color: Colors.black54,
                   ),
                 ),
-              ),
-              loginBox(
-                hintText: 'Email',
-                iconColor: Color(0xffc576d7),
-                boxColor: Color(0xffebd9ee),
-                topMargin: MediaQuery.of(context).size.height * 0.06,
-                icons: Icons.email_outlined,
-              ),
-              loginBox(
-                hintText: 'Password',
-                iconColor: Color.fromARGB(255, 134, 135, 136),
-                boxColor: Color(0xffdfe9fe),
-                topMargin: MediaQuery.of(context).size.height * 0.03,
-                icons: Icons.lock_outline,
-                visibleIcon: true,
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.13,
               ),
               GestureDetector(
                 onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => ForgetPassword()));
+                  metamaskNotifier.connect(); // Iniciar el login con MetaMask
                 },
                 child: Center(
-                  child: Text(
-                    "Forgot Password!",
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.primary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 30),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black26,
+                          blurRadius: 10,
+                          offset: Offset(0, 5),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      metamaskState.isConnected
+                          ? "Conectado: ${metamaskState.currentAddress}"
+                          : "Conectar con MetaMask",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
                   ),
                 ),
               ),
+              SizedBox(height: 20),
+              // Indicador de conexión
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(
+                      Icons.circle,
+                      color: metamaskState.isConnected
+                          ? Colors.green // Verde si está conectado
+                          : Colors.red, // Rojo si no está conectado
+                      size: 16,
+                    ),
+                    SizedBox(width: 8),
+                    Text(
+                      metamaskState.isConnected
+                          ? "Billetera conectada"
+                          : "No se ha conectado la billetera",
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: metamaskState.isConnected
+                            ? Colors.green
+                            : Colors.red,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
               GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => successfullSecure()));
-
-                  // MaterialPageRoute(builder: (context) => secureNft()));
-                },
+                onTap: metamaskState.isConnected
+                    ? () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SignUp(),
+                            ));
+                      }
+                    : null,
                 child: Container(
                   margin: EdgeInsets.only(left: 20, right: 20, top: 20),
                   height: MediaQuery.of(context).size.height * 0.08,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      color: Theme.of(context).colorScheme.primary),
+                      color: metamaskState.isConnected
+                          ? Theme.of(context).colorScheme.primary
+                          : Colors.grey), // Deshabilitado si no está conectado
                   child: Center(
                     child: Text(
-                      "Iniciar Sesion",
+                      "Ingresar",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onBackground,
                           fontSize: 18,
@@ -142,65 +163,6 @@ class _loginPageState extends State<loginPage> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.06,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    width: MediaQuery.of(context).size.height * 0.07,
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.onBackground),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image(
-                        image:
-                            AssetImage(NftConstant.getImagePath("google.png")),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    width: MediaQuery.of(context).size.height * 0.07,
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.onBackground),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(20),
-                      child: Image(
-                        image: AssetImage(
-                            NftConstant.getImagePath("fbcircle.png")),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    width: 20,
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(5),
-                    width: MediaQuery.of(context).size.height * 0.07,
-                    height: MediaQuery.of(context).size.height * 0.07,
-                    decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Theme.of(context).colorScheme.onBackground),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: Image(
-                        image:
-                            AssetImage(NftConstant.getImagePath("apple.png")),
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                  ),
-                ],
-              )
             ],
           ),
         ),

@@ -1,3 +1,4 @@
+import 'package:NFT/screens/auth/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:NFT/configs/config.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
               onSecondary: onsecondaryColor,
               secondary: secoundryColor,
               onBackground: onbackgroundColor)),
-      home: const OnBoardingScreen(),
+      home: const LoginPage(),
     );
   }
 }
