@@ -1,12 +1,9 @@
 import 'dart:typed_data';
-import 'dart:io';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 
 class ImageGenerationNotifier extends StateNotifier<ImageGenerationState> {
   ImageGenerationNotifier() : super(ImageGenerationState());
@@ -16,7 +13,7 @@ class ImageGenerationNotifier extends StateNotifier<ImageGenerationState> {
   Future<String?> textToImage(
       String pais1, String pais2, String paisaje) async {
     String baseprompt =
-        "Create a realistic art piece of a pole flag that combines elements from the countries $pais1 and $pais2. The flag should be set against a backdrop of $paisaje landscapes, showcasing the interior style and natural beauty of these regions.";
+        "Create a realistic art piece of a pole flag that mixed elements from the countries $pais1 and $pais2. The flag should be set against a backdrop of $paisaje landscapes, showcasing the interior style and natural beauty of these regions.";
     String engineId = "stable-diffusion-v1-6";
     String apiHost = 'https://api.stability.ai';
     String apiKey = 'sk-SISMU3GHhmv27DBV6NeujZ9gqjIaffwDPxANS0WvEaXHLVJo';
@@ -48,15 +45,10 @@ class ImageGenerationNotifier extends StateNotifier<ImageGenerationState> {
         debugPrint(response.statusCode.toString());
         Uint8List imageData = response.bodyBytes;
 
-        // Guardar la imagen como un archivo temporal
-        final tempDir = await getTemporaryDirectory();
-        final filePath = path.join(tempDir.path, 'generated_image.jpg');
-        final file = File(filePath);
-        await file.writeAsBytes(imageData);
-
         CloudinaryResponse uploadResponse = await cloudinary.uploadFile(
-          CloudinaryFile.fromFile(
-            filePath,
+          CloudinaryFile.fromBytesData(
+            imageData,
+            identifier: 'generated_image.jpg',
             resourceType: CloudinaryResourceType.Image,
           ),
         );

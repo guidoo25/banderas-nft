@@ -22,7 +22,7 @@ class _topSellerState extends State<topSeller> {
     "nftgirl.jpg",
   ];
 
-  String dropdownvalue = 'Top Seller';
+  String dropdownvalue = 'creadores';
 
   // List of items in our dropdown menu
   var items = [
@@ -148,15 +148,7 @@ class _topSellerState extends State<topSeller> {
                                           color: Theme.of(context)
                                               .colorScheme
                                               .onSecondary)),
-                                  child: Center(
-                                      child: Text(
-                                    "Follow",
-                                    style: TextStyle(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSecondary,
-                                        fontWeight: FontWeight.w600),
-                                  )),
+                                  child: Center(),
                                 )
                               ],
                             ),

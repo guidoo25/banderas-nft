@@ -81,7 +81,7 @@ class _successfullSecureState extends State<successfullSecure> {
                       color: Theme.of(context).colorScheme.primary),
                   child: Center(
                     child: Text(
-                      "Get Started",
+                      "Iniciemos",
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.onBackground,
                           fontSize: 18,

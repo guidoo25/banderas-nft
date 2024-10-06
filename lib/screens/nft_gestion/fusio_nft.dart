@@ -111,25 +111,40 @@ class _FusionCollectionState extends ConsumerState<FusionCollection> {
                             ),
                       if (nftProvider.isNotEmpty)
                         ElevatedButton(
-                            onPressed: () async {
-                              await imageGenerationNotifier.textToImage(
-                                  nftProvider[0].name,
-                                  nftProvider[1].name,
-                                  nftProvider[0].description);
-                              await NftApiService()
-                                  .eliminarNFT(nftProvider[0].nftId!);
-                              await NftApiService()
-                                  .eliminarNFT(nftProvider[1].nftId!);
+                          onPressed: () async {
+                            try {
+                              String? imageUrl =
+                                  await imageGenerationNotifier.textToImage(
+                                nftProvider[0].name,
+                                nftProvider[1].name,
+                                nftProvider[0].description,
+                              );
+                              print("URL de la imagen generada: $imageUrl");
 
-                              await NftApiService().storeNFT(
+                              if (imageUrl != null) {
+                                await NftApiService()
+                                    .eliminarNFT(nftProvider[0].nftId!);
+                                await NftApiService()
+                                    .eliminarNFT(nftProvider[1].nftId!);
+
+                                await NftApiService().storeNFT(
                                   await createNFTJson(
-                                      nftProvider[0].name,
-                                      nftProvider[0].description,
-                                      imageGenerationState.url!,
-                                      "4"));
-                              ;
-                            },
-                            child: Text("Generar Fusión")),
+                                    nftProvider[0].name,
+                                    nftProvider[0].description,
+                                    imageUrl,
+                                    "4",
+                                  ),
+                                );
+                              } else {
+                                debugPrint(
+                                    "Error: La URL de la imagen generada es nula.");
+                              }
+                            } catch (e) {
+                              debugPrint("Error durante la operación: $e");
+                            }
+                          },
+                          child: Text("Generar y Almacenar NFT"),
+                        )
                     ],
                   ),
                   const SizedBox(height: 20),

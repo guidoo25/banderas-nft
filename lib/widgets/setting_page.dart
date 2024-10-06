@@ -33,6 +33,7 @@ class _settingPageState extends ConsumerState<settingPage> {
   @override
   Widget build(BuildContext context) {
     final walletprovider = ref.read(metaMaskProvider.notifier);
+    final walletstate = ref.watch(metaMaskProvider);
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 40),
       child: Column(
@@ -41,7 +42,7 @@ class _settingPageState extends ConsumerState<settingPage> {
           Padding(
             padding: const EdgeInsets.only(left: 20),
             child: Text(
-              "Setting",
+              "Configuraciones",
               style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
             ),
           ),
@@ -89,13 +90,15 @@ class _settingPageState extends ConsumerState<settingPage> {
                             ),
                             Spacer(),
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 walletprovider.logout();
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => LoginPage(),
-                                    ));
+                                if (walletstate.isInOperatingChain == false) {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => LoginPage(),
+                                      ));
+                                }
                               },
                               child: Container(
                                 padding: EdgeInsets.all(10),

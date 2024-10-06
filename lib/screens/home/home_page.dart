@@ -424,7 +424,7 @@ class _homePageState extends ConsumerState<homePage> {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => topsellerDetails()));
+                          builder: (context) => TopSellerDetails()));
                 },
                 child: Container(
                   margin:
@@ -449,8 +449,8 @@ class _homePageState extends ConsumerState<homePage> {
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(10),
                           child: Image(
-                            image:
-                                AssetImage(NftConstant.getImagePath("gem.jpg")),
+                            image: AssetImage(
+                                NftConstant.getImagePath("drop.jpg")),
                             fit: BoxFit.cover,
                           ),
                         ),
@@ -463,14 +463,14 @@ class _homePageState extends ConsumerState<homePage> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  "NFToker #2305",
+                                  "NFToken banderas",
                                   style: TextStyle(fontWeight: FontWeight.w600),
                                 ),
                                 SizedBox(
                                   height: 5,
                                 ),
                                 Text(
-                                  "Highest bid 1/1",
+                                  "Coleccion de banderas",
                                   style: TextStyle(
                                       fontSize: 12,
                                       color: Theme.of(context)
@@ -481,7 +481,7 @@ class _homePageState extends ConsumerState<homePage> {
                                   height: 5,
                                 ),
                                 Text(
-                                  "0.1 wETH",
+                                  "0.7 wETH",
                                   style: TextStyle(
                                       fontSize: 12,
                                       color: Theme.of(context)
@@ -504,12 +504,9 @@ class _homePageState extends ConsumerState<homePage> {
                                         color: Colors.blue),
                                     child: ClipRRect(
                                       borderRadius: BorderRadius.circular(100),
-                                      child: Image(
-                                        image: AssetImage(
-                                          NftConstant.getImagePath(
-                                              "nftgirl1.jpg"),
-                                        ),
-                                        fit: BoxFit.cover,
+                                      child: Icon(
+                                        Icons.add,
+                                        color: Colors.white,
                                       ),
                                     ),
                                   ),
