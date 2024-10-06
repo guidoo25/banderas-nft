@@ -1,5 +1,7 @@
+import 'dart:convert';
+
+import 'package:NFT/providers/api_contract.dart';
 import 'package:NFT/providers/interactContract.dart';
-import 'package:NFT/providers/web3provider.dart';
 import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -18,6 +20,9 @@ final _paisajeController = TextEditingController();
 class _UploadImageScreenState extends ConsumerState<UploadImageScreen> {
   final ImagePicker _picker = ImagePicker();
   String? _uploadedImageUrl;
+  String? selectedRareza;
+
+  List<String> rarezas = ['1', '2', '3', '4', '5'];
 
   // Configuración de Cloudinary (reemplaza con tus credenciales)
   var cloudinary = CloudinaryPublic('dfha4roeg', 'onghmgzh', cache: false);
@@ -31,26 +36,13 @@ class _UploadImageScreenState extends ConsumerState<UploadImageScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: ref.watch(meaningProvider.notifier).initialize(context),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        } else if (snapshot.hasError) {
-          return Center(child: Text('Error al inicializar el contrato'));
-        } else {
-          final nftContract = ref.watch(meaningProvider.notifier);
-          return _buildForm(nftContract);
-        }
-      },
-    );
+    return _buildForm();
   }
 
-  Widget _buildForm(MeaningNotifier nftContract) {
+  Widget _buildForm() {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Subir Imagen'),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -82,9 +74,23 @@ class _UploadImageScreenState extends ConsumerState<UploadImageScreen> {
                       return null;
                     },
                   ),
+                  DropdownButton(
+                      hint: Text('Seleccione la rareza'),
+                      items: rarezas.map((String value) {
+                        return DropdownMenuItem<String>(
+                          value: value,
+                          child: Text(value),
+                        );
+                      }).toList(),
+                      onChanged: (String? value) {
+                        setState(() {
+                          selectedRareza = value;
+                        });
+                      }),
                 ],
               ),
             ),
+            SizedBox(height: 20),
             ElevatedButton.icon(
               onPressed: () async {
                 // Seleccionar imagen desde la galería
@@ -128,13 +134,14 @@ class _UploadImageScreenState extends ConsumerState<UploadImageScreen> {
                 if (_formkey.currentState!.validate() &&
                     _uploadedImageUrl != null) {
                   try {
-                    await nftContract.mintNFT(
-                      1, // Cantidad de NFTs a mintear
-                      1, // Rareza
-                      _uploadedImageUrl!, // URL de la imagen
-                      _paisController.text, // País
-                      _paisajeController.text, // Paisaje
-                    );
+                    final json = await createNFTJson(
+                        _paisController.text,
+                        _paisajeController.text,
+                        _uploadedImageUrl!,
+                        selectedRareza!);
+                    print(json);
+                    await NftApiService().storeNFT(json);
+
                     print('NFT minteado correctamente');
                   } catch (e) {
                     print('Error al mintear el NFT: $e');
@@ -150,4 +157,17 @@ class _UploadImageScreenState extends ConsumerState<UploadImageScreen> {
       ),
     );
   }
+}
+
+//funcion genereara valor de  precio ramdon en
+
+Future<String> createNFTJson(String pais, String paisaje,
+    String uploadedImageUrl, String selectedRareza) async {
+  final json = {
+    "pais": "$pais",
+    "description": "$paisaje",
+    "image": uploadedImageUrl,
+    "rareza": selectedRareza,
+  };
+  return jsonEncode(json);
 }

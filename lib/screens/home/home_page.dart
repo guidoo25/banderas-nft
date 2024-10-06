@@ -1,30 +1,37 @@
 import 'dart:async';
-import 'package:NFT/screens/nft_gestion/create_nft.dart';
+import 'dart:convert';
+import 'package:NFT/configs/config.dart';
+import 'package:NFT/models/nft_model.dart';
+import 'package:NFT/providers/metamask.dart';
+import 'package:NFT/screens/nft_gestion/fusio_nft.dart';
 import 'package:NFT/screens/nft_gestion/tabs/index.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:NFT/screens/nft_gestion/widgets/list_nfts_market.dart';
 import 'package:NFT/utils/image_path.dart';
 import 'package:NFT/widgets/all_categories.dart';
 import 'package:NFT/widgets/create_collection.dart';
 import 'package:NFT/widgets/fillter_result.dart';
 import 'package:NFT/widgets/profile_page.dart';
+import 'package:NFT/widgets/propierdad_nft.dart';
 import 'package:NFT/widgets/setting_page.dart';
-
 import 'package:NFT/widgets/top_seller_details.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
-class homePage extends StatefulWidget {
+class homePage extends ConsumerStatefulWidget {
   const homePage({Key? key}) : super(key: key);
 
   @override
-  State<homePage> createState() => _homePageState();
+  ConsumerState<homePage> createState() => _homePageState();
 }
 
-class _homePageState extends State<homePage> {
+class _homePageState extends ConsumerState<homePage> {
   final List<IconData> _iconData = [
     Icons.home,
-    Icons.leaderboard,
+    Icons.filter_list_off,
     Icons.add,
-    Icons.account_circle_outlined,
+    Icons.functions,
     Icons.settings
   ];
 
@@ -34,12 +41,31 @@ class _homePageState extends State<homePage> {
 
   int bottoMenuIndex = 0;
   Timer? _timer;
+  List<NFT> nftList = [];
+
+  Future<void> fetchNFTs() async {
+    final apirul = Enviroments.API_URL;
+    final url = '$apirul/listar';
+    final response = await http.get(Uri.parse(url));
+
+    if (response.statusCode == 200) {
+      final jsonResponse = jsonDecode(response.body);
+      setState(() {
+        nftList = (jsonResponse['nfts'] as List)
+            .map((data) => NFT.fromJson(data))
+            .toList();
+      });
+    } else {
+      print('Error al obtener NFTs');
+    }
+  }
 
   @override
   void initState() {
     _timeString = _formatDateTime(DateTime.now());
     _timer = Timer.periodic(Duration(seconds: 1), (Timer t) => _getTime());
     super.initState();
+    fetchNFTs();
   }
 
   @override
@@ -50,6 +76,8 @@ class _homePageState extends State<homePage> {
 
   @override
   Widget build(BuildContext context) {
+    final metaMaskState = ref.watch(metaMaskProvider);
+    ;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Stack(
@@ -58,10 +86,12 @@ class _homePageState extends State<homePage> {
             index: bottoMenuIndex,
             children: [
               homeContent(),
-              fillterResult(),
-              createCollection(),
-              profilePage(),
-              settingPage()
+              NftPropiedad(walletAddress: metaMaskState.currentAddress),
+              metaMaskState.isOwner ? CreateCollection() : Container(),
+              // profilePage(),
+              FusionCollection(walletAddress: metaMaskState.currentAddress),
+
+              settingPage(),
             ],
           ),
           Align(
@@ -158,7 +188,7 @@ class _homePageState extends State<homePage> {
                           height: 5,
                         ),
                         GradientText(
-                          "NFT ",
+                          " BANDERAS NFT ",
                           gradient: LinearGradient(colors: [
                             Color(0xff63ccfc),
                             Color(0xffe196f0),
@@ -234,7 +264,7 @@ class _homePageState extends State<homePage> {
                 physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: List.generate(4, (index) => index)
+                  children: List.generate(1, (index) => index)
                       .map((e) => GestureDetector(
                             onTap: () {
                               setState(() {
@@ -283,7 +313,7 @@ class _homePageState extends State<homePage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => AllCategories()));
+                                builder: (context) => NFTListScreen()));
                       },
                       child: Text(
                         "Ver todas",
@@ -297,7 +327,7 @@ class _homePageState extends State<homePage> {
                 scrollDirection: Axis.horizontal,
                 physics: BouncingScrollPhysics(),
                 child: Row(
-                  children: List.generate(3, (index) => index)
+                  children: List.generate(nftList.length, (index) => index)
                       .map((e) => Container(
                             margin:
                                 EdgeInsets.only(left: 20, top: 10, bottom: 20),
@@ -323,23 +353,23 @@ class _homePageState extends State<homePage> {
                                       MediaQuery.of(context).size.height * 0.18,
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(10),
-                                    child: Image(
-                                        image: AssetImage(
-                                      NftConstant.getImagePath("gem.jpg"),
-                                    )),
+                                    child: Image.network(
+                                      nftList[e].image,
+                                      fit: BoxFit.contain,
+                                    ),
                                   ),
                                 ),
                                 SizedBox(
                                   height: 5,
                                 ),
                                 Text(
-                                  "Gucci of Fakurian",
+                                  nftList[e].name,
                                   style: TextStyle(
                                       fontSize: 14,
                                       fontWeight: FontWeight.w600),
                                 ),
                                 Text(
-                                  "Available ART (70)",
+                                  nftList[e].description,
                                   style: TextStyle(
                                       fontSize: 14,
                                       color: Theme.of(context)
@@ -350,161 +380,6 @@ class _homePageState extends State<homePage> {
                             ),
                           ))
                       .toList(),
-                ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.01,
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 20, right: 20),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Nueva Colección",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => tabs_nft()));
-                      },
-                      child: Text(
-                        "Ver todas",
-                        style: TextStyle(color: Colors.blue, fontSize: 14),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Container(
-                margin:
-                    EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 20),
-                padding: EdgeInsets.only(top: 10, bottom: 10),
-                width: MediaQuery.of(context).size.width,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  boxShadow: const [
-                    BoxShadow(
-                      offset: Offset(2, 2),
-                      blurRadius: 10,
-                      color: Color.fromRGBO(0, 0, 0, 0.16),
-                    )
-                  ],
-                  gradient: LinearGradient(colors: const [
-                    Color(0xff63ccfc),
-                    Color(0xffe196f0),
-                    Color(0xfff8b962),
-                  ]),
-                ),
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  scrollDirection: Axis.vertical,
-                  child: Column(
-                    children: List.generate(2, (index) => index)
-                        .map((e) => Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      margin:
-                                          EdgeInsets.only(top: 10, left: 10),
-                                      height: 60,
-                                      width: 60,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                        child: Image(
-                                          image: AssetImage(
-                                            NftConstant.getImagePath(
-                                              "profile.jpg",
-                                            ),
-                                          ),
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Column(
-                                      children: [
-                                        Text(
-                                          "Cryptocat",
-                                          style: TextStyle(color: Colors.white),
-                                        ),
-                                        SizedBox(
-                                          height: 3,
-                                        ),
-                                        Text(
-                                          " 6.056 ETH",
-                                          style: TextStyle(
-                                              color: Theme.of(context)
-                                                  .scaffoldBackgroundColor
-                                                  .withOpacity(0.6)),
-                                        ),
-                                      ],
-                                    ),
-                                    Spacer(),
-                                    GestureDetector(
-                                      onTap: () {
-                                        setState(() {
-                                          followIndex = e;
-                                        });
-                                      },
-                                      child: Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.25,
-                                        margin: EdgeInsets.only(right: 10),
-                                        padding: EdgeInsets.only(
-                                            left: 10,
-                                            right: 10,
-                                            top: 5,
-                                            bottom: 5),
-                                        decoration: BoxDecoration(
-                                            color: followIndex == e
-                                                ? Colors.blue
-                                                : Colors.transparent,
-                                            border: Border.all(
-                                                color: followIndex == e
-                                                    ? Colors.transparent
-                                                    : Colors.white),
-                                            borderRadius:
-                                                BorderRadius.circular(5)),
-                                        child: Center(
-                                          child: Text(
-                                            followIndex == e
-                                                ? "Following"
-                                                : "Follow",
-                                            style:
-                                                TextStyle(color: Colors.white),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                e == 1
-                                    ? SizedBox()
-                                    : Container(
-                                        margin: EdgeInsets.only(
-                                            left: 20, right: 20, top: 10),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        height: 0.5,
-                                        color: Colors.white,
-                                      )
-                              ],
-                            ))
-                        .toList(),
-                  ),
                 ),
               ),
               SizedBox(

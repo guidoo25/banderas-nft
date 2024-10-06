@@ -1,244 +1,243 @@
+import 'dart:convert';
+
+import 'package:NFT/providers/api_contract.dart';
+import 'package:NFT/screens/nft_secure/secure_nft.dart';
+import 'package:cloudinary_public/cloudinary_public.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:NFT/utils/image_path.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
-class createCollection extends StatefulWidget {
-  const createCollection({Key? key}) : super(key: key);
+class CreateCollection extends StatefulWidget {
+  const CreateCollection({Key? key}) : super(key: key);
 
   @override
-  State<createCollection> createState() => _createCollectionState();
+  State<CreateCollection> createState() => _CreateCollectionState();
 }
 
-class _createCollectionState extends State<createCollection> {
+class _CreateCollectionState extends State<CreateCollection> {
+  final ImagePicker _picker = ImagePicker();
+  String? _uploadedImageUrl;
   bool state = false;
-  final List<IconData> _iconData = [
-    Icons.bookmark_add_outlined,
-    Icons.timelapse_outlined,
-    Icons.rotate_left_outlined,
-  ];
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _descriptionController = TextEditingController();
+  String? selectedRareza;
+  final cloudinary = CloudinaryPublic('dfha4roeg', 'onghmgzh', cache: false);
+  List<String> rarezas = ['1', '2', '3', '4', '5'];
 
-  List name = ["Fixed price", "Time Auction", "Open for bids"];
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _descriptionController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 20),
-      child: Stack(
-        children: [
-          Padding(
-            padding: EdgeInsets.only(
-                top: MediaQuery.of(context).size.height * 0.09,
-                bottom: MediaQuery.of(context).size.height * 0.08),
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10, right: 10),
-                    child: Row(
-                      children: List.generate(2, (index) => index)
-                          .map((e) => Container(
-                                margin: EdgeInsets.only(left: 10),
-                                width: MediaQuery.of(context).size.width * 0.42,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.19,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        offset: Offset(2, 2),
-                                        blurRadius: 10,
-                                        color: Color.fromRGBO(0, 0, 0, 0.16),
-                                      )
-                                    ],
-                                    color: Colors.white),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      padding: EdgeInsets.only(
-                                          top: 10, left: 30, right: 30),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(100),
-                                      ),
-                                      child: ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image(
-                                          image: AssetImage(
-                                              NftConstant.getImagePath(
-                                                  "gem.jpg")),
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(
-                                      e == 0 ? "Single" : "Multiple",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.w600),
-                                    )
-                                  ],
-                                ),
-                              ))
-                          .toList(),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Create NFT Collection'),
+        centerTitle: true,
+        backgroundColor: Color.fromRGBO(255, 255, 255, 1),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Título del formulario
+                const Text(
+                  "Crea tu nft",
+                  style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87),
+                ),
+                const SizedBox(height: 20),
+
+                // Campo de texto para el nombre de la colección
+                TextFormField(
+                  controller: _nameController,
+                  decoration: InputDecoration(
+                    labelText: "pais",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
                   ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, top: 30, right: 20),
-                    child: Row(
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a collection name';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+
+                // Campo de texto para la descripción
+                TextFormField(
+                  controller: _descriptionController,
+                  maxLines: 4,
+                  decoration: InputDecoration(
+                    labelText: "paisaje",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a description';
+                    }
+                    return null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                DropdownButton(
+                    hint: Text('Seleccione la rareza'),
+                    items: rarezas.map((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                    onChanged: (String? value) {
+                      setState(() {
+                        selectedRareza = value;
+                      });
+                    }),
+
+                // Título para la sección de imagen
+                const Text(
+                  "sube imagen de nft",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 10),
+
+                // Subir imagen con borde punteado
+                DottedBorder(
+                  borderType: BorderType.RRect,
+                  radius: const Radius.circular(12),
+                  dashPattern: const [10, 5],
+                  strokeWidth: 2,
+                  color: Colors.deepPurpleAccent,
+                  child: Container(
+                    height: 150,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      color: Colors.deepPurpleAccent.withOpacity(0.1),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: const [
-                            Text(
-                              "Put on marketplace",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 16),
-                            ),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "Enter price to allow users instantly \npurchase your NFT",
-                              style: TextStyle(fontSize: 14),
-                            ),
-                          ],
+                        const Text(
+                          "PNG, JPG; Max Size: 100MB",
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 14),
                         ),
-                        Spacer(),
-                        CupertinoSwitch(
-                          value: state,
-                          onChanged: (value) {
-                            state = value;
-                            setState(() {});
+                        const SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () async {
+                            final XFile? image = await _picker.pickImage(
+                                source: ImageSource.gallery);
+                            if (image != null) {
+                              try {
+                                CloudinaryResponse response =
+                                    await cloudinary.uploadFile(
+                                  CloudinaryFile.fromFile(image.path,
+                                      resourceType:
+                                          CloudinaryResourceType.Image),
+                                );
+                                setState(() {
+                                  _uploadedImageUrl = response.secureUrl;
+                                });
+                              } catch (e) {
+                                print("Error subir imagen: $e");
+                              }
+                            }
                           },
-                          activeColor: CupertinoColors.activeBlue,
-                          trackColor:
-                              CupertinoColors.systemGrey.withOpacity(0.6),
+                          child: _uploadedImageUrl == null
+                              ? Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 20, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.deepPurpleAccent,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: const Text(
+                                    "subir Imagen",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                )
+                              : Image.network(
+                                  _uploadedImageUrl!,
+                                  fit: BoxFit.cover,
+                                  width: 100,
+                                  height: 100,
+                                ),
                         ),
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.04,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20, right: 20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: List.generate(3, (index) => index)
-                          .map((e) => Container(
-                                width: MediaQuery.of(context).size.width * 0.27,
-                                height:
-                                    MediaQuery.of(context).size.height * 0.14,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                  boxShadow: const [
-                                    BoxShadow(
-                                      offset: Offset(2, 2),
-                                      blurRadius: 10,
-                                      color: Color.fromRGBO(0, 0, 0, 0.16),
-                                    )
-                                  ],
-                                ),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(
-                                      _iconData[e],
-                                      color: Colors.grey,
-                                      size: 40,
-                                    ),
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-                                    Text(name[e])
-                                  ],
-                                ),
-                              ))
-                          .toList(),
-                    ),
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.04,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 20),
-                    child: Text(
-                      "Upload file",
-                      style:
-                          TextStyle(fontWeight: FontWeight.w600, fontSize: 16),
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 20, right: 20, top: 20),
-                    child: DottedBorder(
-                      borderType: BorderType.RRect,
-                      radius: Radius.circular(10),
-                      dashPattern: const [10, 5, 10, 5, 10, 5],
-                      strokeWidth: 1,
-                      color: Theme.of(context).colorScheme.primary,
-                      child: Container(
-                        height: MediaQuery.of(context).size.height * 0.15,
-                        width: MediaQuery.of(context).size.width,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.2)),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              "PNG,GIF,WEBP,MP4 or\nMP3,Max 100mb",
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w600, fontSize: 12),
-                              textAlign: TextAlign.center,
-                            ),
-                            SizedBox(
-                              height: 10,
-                            ),
-                            Container(
-                              padding: EdgeInsets.only(
-                                  left: 10, right: 10, top: 5, bottom: 5),
-                              decoration: BoxDecoration(
-                                  color: Theme.of(context).colorScheme.primary,
-                                  borderRadius: BorderRadius.circular(10)),
-                              child: Text(
-                                "upload fill",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            )
-                          ],
-                        ),
+                ),
+                const SizedBox(height: 30),
+
+                // Botón para enviar el formulario
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      // final uuid = Uuid().v4();
+                      if (_formKey.currentState?.validate() ?? false) {
+                        final json = await createNFTJson(
+                          _nameController.text,
+                          _descriptionController.text,
+                          _uploadedImageUrl!,
+                          selectedRareza!,
+                        );
+                        await NftApiService().storeNFT(json);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
                     ),
-                  )
-                ],
-              ),
+                    child: const Text(
+                      "Crear NFT",
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
-                  Text(
-                    "Create Single Collection",
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
+        ),
       ),
     );
   }
+}
+
+Future<String> createNFTJson(String pais, String paisaje,
+    String uploadedImageUrl, String selectedRareza) async {
+  final json = {
+    "pais": "$pais",
+    "description": "$pais",
+    "image": uploadedImageUrl,
+    "rareza": selectedRareza,
+  };
+  return jsonEncode(json);
 }

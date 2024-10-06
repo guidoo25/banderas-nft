@@ -6,18 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CompradosNFTsScreen extends ConsumerStatefulWidget {
+class NftPropiedad extends ConsumerStatefulWidget {
   final String walletAddress;
 
-  const CompradosNFTsScreen({Key? key, required this.walletAddress})
-      : super(key: key);
+  const NftPropiedad({Key? key, required this.walletAddress}) : super(key: key);
 
   @override
-  ConsumerState<CompradosNFTsScreen> createState() =>
-      _CompradosNFTsScreenState();
+  ConsumerState<NftPropiedad> createState() => _CompradosNFTsScreenState();
 }
 
-class _CompradosNFTsScreenState extends ConsumerState<CompradosNFTsScreen> {
+class _CompradosNFTsScreenState extends ConsumerState<NftPropiedad> {
   late Future<List<NFT>> _nftsCompradosFuture;
   List<NFT> selectedNFTs = [];
 
@@ -56,7 +54,7 @@ class _CompradosNFTsScreenState extends ConsumerState<CompradosNFTsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('NFTs Comprados'),
+        title: const Text('NFTs en propiedad'),
         backgroundColor: Colors.deepPurpleAccent,
       ),
       body: Padding(
@@ -182,6 +180,37 @@ class NFTItemCard extends ConsumerWidget {
                         "Comprado",
                         style: TextStyle(color: Colors.redAccent),
                       ),
+                IconButton(
+                  onPressed: () {
+                    //alter dialog
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Eliminar NFT'),
+                          content: const Text(
+                              '¿Estás seguro de que deseas eliminar este NFT?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Cancelar'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                NftApiService().eliminarNFT(nft.nftId!);
+                                Navigator.of(context).pop();
+                              },
+                              child: const Text('Eliminar'),
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                ),
               ],
             ),
             const Spacer(),

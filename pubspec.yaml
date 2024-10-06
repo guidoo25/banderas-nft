@@ -43,8 +43,8 @@ dependencies:
   loading_elevated_button: ^1.0.0+2
   path_provider: ^2.0.5
   smooth_page_indicator: ^1.1.0
-  web3dart: ^2.3.1
   web_socket_channel: ^2.2.0
+  uuid: ^3.0.5
 
 dev_dependencies:
   flutter_lints: ^2.0.0
@@ -56,10 +56,10 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+    - .env
     - assets/
     - assets/images/
     - assets/images/fullApps/nft/
-    - .env
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

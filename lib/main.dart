@@ -1,4 +1,5 @@
 import 'package:NFT/screens/auth/login_page.dart';
+import 'package:NFT/screens/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:NFT/configs/config.dart';
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
               secondary: secoundryColor,
               onBackground: onbackgroundColor)),
       home: const LoginPage(),
+      //home: const homePage(),
     );
   }
 }

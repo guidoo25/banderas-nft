@@ -12,4 +12,5 @@ class Enviroments {
   static String rpcUrl = dotenv.env['rpcUrl'] ?? '';
   static String cloudinaruser = dotenv.env['cloudinaryuser'] ?? '';
   static String cloudinaryKey = dotenv.env['clodinarykey'] ?? '';
+  static String API_URL = dotenv.env['API_NODE'] ?? '';
 }

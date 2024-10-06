@@ -1,21 +1,18 @@
+import 'package:NFT/providers/metamask.dart';
+import 'package:NFT/screens/auth/login_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class settingPage extends StatefulWidget {
+class settingPage extends ConsumerStatefulWidget {
   const settingPage({Key? key}) : super(key: key);
 
   @override
-  State<settingPage> createState() => _settingPageState();
+  ConsumerState<settingPage> createState() => _settingPageState();
 }
 
-class _settingPageState extends State<settingPage> {
-  final List<IconData> _iconData = [
-    Icons.shopping_bag_outlined,
-    Icons.favorite_border,
-    Icons.card_giftcard_rounded,
-    Icons.edit,
-    Icons.login_outlined
-  ];
+class _settingPageState extends ConsumerState<settingPage> {
+  final List<IconData> _iconData = [Icons.login_outlined];
 
   List colors = [
     Color(0xff9b7fbf),
@@ -35,6 +32,7 @@ class _settingPageState extends State<settingPage> {
 
   @override
   Widget build(BuildContext context) {
+    final walletprovider = ref.read(metaMaskProvider.notifier);
     return Padding(
       padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top + 40),
       child: Column(
@@ -65,7 +63,7 @@ class _settingPageState extends State<settingPage> {
               ],
             ),
             child: Column(
-                children: List.generate(5, (index) => index)
+                children: List.generate(1, (index) => index)
                     .map((e) => Row(
                           children: [
                             SizedBox(
@@ -86,13 +84,32 @@ class _settingPageState extends State<settingPage> {
                               width: 10,
                             ),
                             Text(
-                              "My Bought",
+                              "Salir",
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                             Spacer(),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              size: 20,
+                            GestureDetector(
+                              onTap: () {
+                                walletprovider.logout();
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LoginPage(),
+                                    ));
+                              },
+                              child: Container(
+                                padding: EdgeInsets.all(10),
+                                margin: EdgeInsets.only(right: 10),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                    color: Colors.red),
+                                child: Text(
+                                  "cerrar session",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
                             ),
                             SizedBox(
                               width: 10,

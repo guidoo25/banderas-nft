@@ -1,5 +1,5 @@
 import 'package:NFT/screens/nft_gestion/create_nft.dart';
-import 'package:NFT/screens/nft_gestion/my_list_nft.dart';
+import 'package:NFT/screens/nft_gestion/widgets/list_nfts_market.dart';
 import 'package:flutter/material.dart';
 
 class tabs_nft extends StatelessWidget {
@@ -22,7 +22,7 @@ class tabs_nft extends StatelessWidget {
                 children: [
                   Container(
                     child: Center(
-                      child: MyNFTsScreen(),
+                      child: NFTListScreen(),
                     ),
                   ),
                   // Replace these with your tab views

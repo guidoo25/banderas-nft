@@ -40,13 +40,17 @@ class _successfullSecureState extends State<successfullSecure> {
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.16,
               ),
-              Image(image: AssetImage(NftConstant.getImagePath("success.jpg"))),
+              Center(
+                child: Image(
+                    image:
+                        AssetImage(NftConstant.getImagePath("estandarte.png"))),
+              ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.05,
               ),
               Center(
                   child: Text(
-                "Successfull Security Recover",
+                "Proyecto de banderas",
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               )),
               SizedBox(
@@ -54,7 +58,7 @@ class _successfullSecureState extends State<successfullSecure> {
               ),
               Center(
                   child: Text(
-                "You have successfull protected your wallet, Remember to keep your secret Recovery pharase safe, it is your responsibilty",
+                "Consigue toda la colección de banderas y fusionalos para obtener una bandera única",
                 style: TextStyle(
                   fontSize: 16,
                 ),

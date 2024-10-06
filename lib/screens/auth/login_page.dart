@@ -1,7 +1,7 @@
 import 'package:NFT/providers/metamask.dart';
+import 'package:NFT/screens/nft_secure/successfull_secure.dart';
 import 'package:NFT/utils/image_path.dart';
 import 'package:flutter/material.dart';
-import 'package:NFT/screens/auth/sign_up.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
@@ -136,7 +136,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SignUp(),
+                              builder: (context) => successfullSecure(),
                             ));
                       }
                     : null,
@@ -148,7 +148,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                       borderRadius: BorderRadius.circular(10),
                       color: metamaskState.isConnected
                           ? Theme.of(context).colorScheme.primary
-                          : Colors.grey), // Deshabilitado si no está conectado
+                          : Colors.grey),
                   child: Center(
                     child: Text(
                       "Ingresar",
